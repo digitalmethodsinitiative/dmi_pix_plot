@@ -1329,6 +1329,7 @@ noscript {
   color: #555;
   height: 115px;
   z-index: 1;
+  overflow: auto;
 }
 
 .meta-content {
