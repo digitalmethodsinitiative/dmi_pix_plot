@@ -9,7 +9,8 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
 
 3. In repo directory, run ` docker build -t pix_plot .`
 
-4. Start and connect to container `docker container run --publish 4000:4000 -it pix_plot`
+4. Start and connect to container `docker container run --publish 4000:4000 --name pix_plot -it pix_plot`
+ - `--name pixplot` will allow you to start the container again later with `docker start pix_plot`
  - `--publish 4000:4000` allows container to publish outside of container (i.e., your localhost)
 
 5. Copy any image files with  `docker cp path/to/name_of_folder docker_container_id:/usr/src/app/name_of_folder`
