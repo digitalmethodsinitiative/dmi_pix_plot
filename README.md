@@ -1,4 +1,13 @@
 # PixPlot
+This is a fork of https://dhlab.yale.edu/projects/pixplot/.
+
+It was intended to add Docker support and specifically focus on integrating with other tools to allow easy image visualization.
+
+(See additional information here on use)[https://github.com/digitalmethodsinitiative/dmi_pix_plot/blob/master/Docker_README.md#intro]
+
+Below is the Readme at the time of the fork.
+
+# PixPlot
 
 This repository contains code that can be used to visualize tens of thousands of images in a two-dimensional projection within which similar images are clustered together. The image analysis uses Tensorflow's Inception bindings, and the visualization layer uses a custom WebGL viewer.
 
