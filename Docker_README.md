@@ -3,9 +3,9 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
 
 # How to use w/ Docker
 
-1. Install (Docker)[https://docs.docker.com/get-docker/]
+1. Install [Docker](https://docs.docker.com/get-docker/)
 
-2. Clone (PixPlot Repo)[https://github.com/YaleDHLab/pix-plot]
+2. Clone [PixPlot Repo](https://github.com/YaleDHLab/pix-plot)
 
 3. In repo directory, run ` docker build -t pix_plot .`
 
@@ -19,14 +19,13 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
   - TODO: look at running on files outside container
 
 6. Post via curl or python requests commands to pixplot
-  - pixplot commands found at (PixPlot's github)[https://github.com/YaleDHLab/pix-plot]
+  - pixplot commands found at [PixPlot's github](https://github.com/YaleDHLab/pix-plot)
   - API requests can be sent like so:
 ```
+# This is equivalent to "python pixplot/pixplot.py --images "path/to/images/*.jpg" --metadata "path/to/metadata.csv"
 import requests
 data = {"args" : ['--images', "/usr/src/app/image_folder/*.jpg", '--metadata', "/usr/src/app/image_folder/metadata.csv"]}
 resp = requests.post("http://localhost:4000/api/pixplot", json=data)
-
-# equivalent to "python pixplot/pixplot.py --images "path/to/images/*.jpg" --metadata "path/to/metadata.csv"
 ```
   - It is also possible to run commands directly while the docker container is running via `docker exec -it docker_container_id "/bin/bash"`
 
