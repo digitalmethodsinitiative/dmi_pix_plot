@@ -1,4 +1,4 @@
-# PixPlot
+# DMI PixPlot
 This is a fork of https://dhlab.yale.edu/projects/pixplot/.
 
 It was intended to add Docker support and specifically focus on integrating with other tools to allow easy image visualization.

@@ -27,6 +27,11 @@ import requests
 data = {"args" : ['--images', "/usr/src/app/image_folder/*.jpg", '--metadata', "/usr/src/app/image_folder/metadata.csv"]}
 resp = requests.post("http://localhost:4000/api/pixplot", json=data)
 ```
+  - You can check the status of your command like so:
+```
+result = requests.get(resp.json()['result_url'])
+print(result.json())
+```
   - It is also possible to run commands directly while the docker container is running via `docker exec -it docker_container_id "/bin/bash"`
 
 7. Navigate your browser to http://localhost:4000 to view your output PixPlot
