@@ -11,6 +11,8 @@ Below is the Readme at the time of the fork.
 
 This repository contains code that can be used to visualize tens of thousands of images in a two-dimensional projection within which similar images are clustered together. The image analysis uses Tensorflow's Inception bindings, and the visualization layer uses a custom WebGL viewer.
 
+See the [change log](https://github.com/YaleDHLab/pix-plot/wiki/Change-Log) for recent updates.
+
 ![App preview](./pixplot/web/assets/images/preview.png?raw=true)
 
 ## Dependencies
@@ -85,7 +87,7 @@ pixplot --images "path/to/images/*.jpg" --cell_size 10
 The [UMAP algorithm](https://github.com/lmcinnes/umap) is particularly sensitive to three hyperparemeters:
 
 ```
---min_distance: determines the minimum distance between points in the embedding
+--min_dist: determines the minimum distance between points in the embedding
 --n_neighbors: determines the tradeoff between local and global clusters
 --metric: determines the distance metric to use when positioning points
 ```
