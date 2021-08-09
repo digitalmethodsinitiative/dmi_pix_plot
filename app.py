@@ -1,4 +1,4 @@
-from flask import Flask, abort, send_file, request, redirect, render_template
+from flask import Flask, flash, abort, send_file, request, redirect, render_template
 from werkzeug.utils import secure_filename
 from flask_executor import Executor
 from flask_shell2http import Shell2HTTP
@@ -17,7 +17,8 @@ if not os.path.isdir(UPLOAD_FOLDER):
 # Config app
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# Limit size of upload; 16 * 1024 * 1024 is 16 megabytes
+#app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Allowed upload extensions
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
