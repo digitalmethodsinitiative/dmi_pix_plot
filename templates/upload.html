@@ -15,6 +15,15 @@
 <form method="post" action="/upload/" enctype="multipart/form-data">
     <dl>
 		<p>
+			<label>Folder name:</label>
+			<input name="folder_name" required>
+		</p>
+		<p>
+			<label>Metadata csv (optional):</label>
+			<input type="file" name="metadata" autocomplete="off">
+		</p>
+		<p>
+			<label>Images:</label>
 			<input type="file" name="files[]" multiple="true" autocomplete="off" required>
 		</p>
     </dl>
