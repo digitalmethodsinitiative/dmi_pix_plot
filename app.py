@@ -9,10 +9,12 @@ app = Flask(__name__)
 
 # Set upload folder
 path = os.getcwd()
-UPLOAD_FOLDER = os.path.join(path, 'uploads')
+UPLOAD_FOLDER = os.path.join(path, 'data/uploads')
+PLOTS_FOLDER = os.path.join(path, 'data/plots')
 # Make dir if does not exist
-if not os.path.isdir(UPLOAD_FOLDER):
-    os.mkdir(UPLOAD_FOLDER)
+for folder_name in [UPLOAD_FOLDER, PLOTS_FOLDER]:
+    if not os.path.isdir(folder_name):
+        os.makedirs(folder_name)
 
 # Config app
 app.secret_key = "secret key"
@@ -30,11 +32,9 @@ def allowed_file(filename, extensions=ALLOWED_EXTENSIONS):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in extensions
 
 # File browser
-@app.route('/uploads/', defaults={'req_path': ''})
-@app.route('/uploads/<path:req_path>')
-def dir_listing(req_path):
+def dir_listing(base_dir, req_path):
     # Joining the upload folder and the requested path
-    abs_path = os.path.join(UPLOAD_FOLDER, req_path)
+    abs_path = os.path.join(base_dir, req_path)
 
     # Return 404 if path doesn't exist
     if not os.path.exists(abs_path):
@@ -47,6 +47,19 @@ def dir_listing(req_path):
     # Show directory contents
     files = os.listdir(abs_path)
     return render_template('files.html', files=files)
+
+# Use file browser for uploads
+@app.route('/uploads/', defaults={'req_path': ''})
+@app.route('/uploads/<path:req_path>')
+def uploads(req_path):
+    return dir_listing(UPLOAD_FOLDER, req_path)
+
+# Use file browser for plots
+# TODO create plots specific browser
+@app.route('/plots/', defaults={'req_path': ''})
+@app.route('/plots/<path:req_path>')
+def plots(req_path):
+    return dir_listing(PLOTS_FOLDER, req_path)
 
 # Interactive upload
 @app.route('/upload/')

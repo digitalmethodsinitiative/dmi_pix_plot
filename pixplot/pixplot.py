@@ -106,7 +106,7 @@ NB: Keras Image class objects return image.size as w,h
 config = {
   'images': None,
   'metadata': None,
-  'out_dir': 'output',
+  'out_dir': 'data/plots/output',
   'max_images': None,
   'use_cache': True,
   'encoding': 'utf8',
