@@ -1,8 +1,10 @@
-from flask import Flask, flash, abort, send_file, request, redirect, render_template, Markup
+from flask import Flask, flash, abort, send_file, request, redirect, render_template, Markup, session
 from werkzeug.utils import secure_filename
 from flask_executor import Executor
 from flask_shell2http import Shell2HTTP
+import requests
 import os
+import time
 
 # Flask application instance
 app = Flask(__name__)
@@ -92,13 +94,54 @@ def upload_file():
 
         metadata = request.files.get('metadata', None)
         if metadata and allowed_file(metadata.filename, set(['csv'])):
-            filename = secure_filename(metadata.filename)
-            metadata.save(os.path.join(folder, filename))
+            metadata.save(os.path.join(folder, 'metadata.csv'))
 
         url_reference = '<a href="/uploads/%s" class="alert-link">Image(s) successfully uploaded here</a>' % form_data['folder_name']
         flash(Markup(url_reference))
         return redirect('/upload/')
 
+# Create PixPlot
+@app.route('/create/', methods=['GET','POST'])
+def create():
+    folders = os.listdir(UPLOAD_FOLDER)
+
+    if request.method == 'GET':
+        return render_template('create.html', folders=folders)
+    elif request.method == 'POST':
+        form_data = request.form
+        image_location = os.path.join(UPLOAD_FOLDER, form_data['folder_name'])
+
+        destination = os.path.join(PLOTS_FOLDER, form_data['folder_name'])
+
+        if os.path.isfile(os.path.join(image_location, 'metadata.csv')):
+            metadata = os.path.join(image_location, 'metadata.csv')
+            data = {"args" : ['--images', image_location + "/*.jpg", '--out_dir', destination, '--metadata', metadata]}
+        else:
+            data = {"args" : ['--images', image_location + "/*.jpg", '--out_dir', destination]}
+
+        response = requests.post(request.url_root + "api/pixplot", json=data)
+
+        while True:
+            time.sleep(10)
+            result = requests.get(response.json()['result_url'])
+            if 'status' in result.json().keys() and result.json()['status'] == 'running':
+                # Still running
+                continue
+            elif 'report' in result.json().keys() and result.json()['report'][-6:-1] == 'Done!':
+                # Complete without error
+                message = '<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % session.get('create_folder')
+                break
+            else:
+                # Something botched
+                message = 'There was an error creating your PixPlot. Sorry.'
+                print(result.json())
+                break
+
+        flash(message)
+        return redirect('/create/')
+
+    else:
+        return abort(404)
 
 # API
 executor = Executor(app)
