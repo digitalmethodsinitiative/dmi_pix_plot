@@ -57,6 +57,11 @@ def dir_listing(base_dir, req_path):
     files = os.listdir(abs_path)
     return render_template('files.html', files=files)
 
+# Home
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 # Use file browser for uploads
 @app.route('/uploads/', defaults={'req_path': ''})
 @app.route('/uploads/<path:req_path>')

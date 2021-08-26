@@ -1,0 +1,26 @@
+<!doctype html>
+<title>PixPlot</title>
+<h2>PixPlot Creator</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<p>
+  <a href="{{ url_for('upload_form') }}">Upload photos</a>
+</p>
+<p>
+  <a href="{{ url_for('uploads') }}">View uploaded photos</a>
+</p>
+<p>
+  <a href="{{ url_for('create') }}">Create PixPlot</a>
+</p>
+<p>
+  <a href="{{ url_for('plots') }}">View PixPlots</a>
+</p>
