@@ -1,13 +1,20 @@
-from flask import Flask, flash, abort, send_file, request, redirect, render_template, Markup, session
+from flask import Flask, flash, abort, send_file, request, redirect, render_template, Markup
 from werkzeug.utils import secure_filename
 from flask_executor import Executor
 from flask_shell2http import Shell2HTTP
+import logging
 import requests
 import os
 import time
 
 # Flask application instance
 app = Flask(__name__)
+
+# Set up logging if run by gunicorn
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 # Set upload folder
 path = os.getcwd()
@@ -120,21 +127,24 @@ def create():
             data = {"args" : ['--images', image_location + "/*.jpg", '--out_dir', destination]}
 
         response = requests.post(request.url_root + "api/pixplot", json=data)
+        app.logger.info('Create request status: ' + str(response.status_code))
+        app.logger.debug('Create request status: ' + str(response.json()))
 
         while True:
             time.sleep(10)
             result = requests.get(response.json()['result_url'])
+            app.logger.debug(str(result.json()))
             if 'status' in result.json().keys() and result.json()['status'] == 'running':
                 # Still running
                 continue
             elif 'report' in result.json().keys() and result.json()['report'][-6:-1] == 'Done!':
                 # Complete without error
-                message = '<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % session.get('create_folder')
+                message = '<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name']
                 break
             else:
                 # Something botched
                 message = 'There was an error creating your PixPlot. Sorry.'
-                print(result.json())
+                app.logger.error(str(result.json()))
                 break
 
         flash(message)
