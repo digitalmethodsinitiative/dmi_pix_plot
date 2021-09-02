@@ -1,6 +1,6 @@
 <!doctype html>
-<title>Upload Images</title>
-<h2>Select image(s) to upload</h2>
+<title>Uploaded Images</title>
+<h2>Uploaded Images</h2>
 <p>
 	{% with messages = get_flashed_messages() %}
 	  {% if messages %}
@@ -24,7 +24,7 @@
 		</p>
 		<p>
 			<label>Images:</label>
-			<input type="file" name="files[]" multiple="true" autocomplete="off" required>
+			<input type="file" name="images" multiple="true" autocomplete="off" required>
 		</p>
     </dl>
     <p>

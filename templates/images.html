@@ -1,6 +1,7 @@
 <!doctype html>
 <title>Uploaded Images</title>
-<h2>Uploaded Images</h2>
+<h2><a href = "{{ url_for('uploads') }}">Uploaded Images</a></h2>
+<h2>{{ current_dir }}</h2>
 <p>
 	{% with messages = get_flashed_messages() %}
 	  {% if messages %}
@@ -16,7 +17,7 @@
     {% for file in files %}
     <li>
         <a href="{{ (request.path + '/' if request.path|last != '/' else request.path) + file }}">
-            {{ (request.path + '/' if request.path|last != '/' else request.path) + file }}
+            {{ file }}
         </a>
     </li>
     {% endfor %}
