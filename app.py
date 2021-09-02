@@ -167,7 +167,9 @@ def upload_photos_api():
     Optional:
     data = {'folder_name' : 'desired_name'}
     """
-    return process_images(request)
+    
+    result_response, status_code = process_images(request)
+    return jsonify(result_response)
 
 def process_images(request):
     if 'images' not in request.files or len(request.files.getlist('images')) < 1:
@@ -201,14 +203,16 @@ def process_images(request):
     else:
         json_data = {'args' : ['--images', image_folder + "/*", '--out_dir', PLOTS_FOLDER+ '/' + folder_name]}
 
-    return jsonify(
-                    {'upload_location' : request.url_root + 'uploads/' +  folder_name,
-                    'folder_name' : folder_name,
-                     'create_pixplot_post_info' : {
-                         'url' : request.url_root + 'api/pixplot',
-                         'json' : json_data
-                     }}
-                   ), 200
+    response = {
+                'upload_location' : request.url_root + 'uploads/' +  folder_name,
+                'folder_name' : folder_name,
+                'create_pixplot_post_info' : {
+                    'url' : request.url_root + 'api/pixplot',
+                    'json' : json_data,
+                    },
+                }
+
+    return response, 200
 
 # PixPlot command API
 executor = Executor(app)
