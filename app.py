@@ -5,34 +5,40 @@ from flask_shell2http import Shell2HTTP
 import logging
 import requests
 import uuid
+import sys
 import os
 import time
 
 # Flask application instance
 app = Flask(__name__)
 
-# Logging
-app.logger.setLevel(logging.DEBUG)
+# Set up logging if run by gunicorn
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
 # Log file
 logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
 file_handler = logging.FileHandler("pix_plot.log")
 file_handler.setFormatter(logFormatter)
 app.logger.addHandler(file_handler)
 
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s',
-#     handlers=[
-#             logging.FileHandler("debug.log"),
-#             logging.StreamHandler()
-#         ],
-#     )
+# Flask_shell2http logger
+fs2h_logger = logging.getLogger("flask_shell2http")
+# create new handler
+handler = logging.StreamHandler(sys.stdout)
+fs2h_logger.addHandler(handler)
+fs2h_logger.addHandler(file_handler)
+# log messages of severity DEBUG or lower to the console
+fs2h_logger.setLevel(logging.DEBUG)  # this is really important!
 
-# # Set up logging if run by gunicorn
-# if __name__ != '__main__':
-#     gunicorn_logger = logging.getLogger('gunicorn.error')
-#     app.logger.handlers = gunicorn_logger.handlers
-#     app.logger.setLevel(gunicorn_logger.level)
+# # Test logs
+# app.logger.debug('this is a DEBUG message')
+# app.logger.info('this is an INFO message')
+# app.logger.warning('this is a WARNING message')
+# app.logger.error('this is an ERROR message')
+# app.logger.critical('this is a CRITICAL message')
 
 # Set upload folder
 path = os.getcwd()
@@ -167,7 +173,7 @@ def upload_photos_api():
     Optional:
     data = {'folder_name' : 'desired_name'}
     """
-    
+
     result_response, status_code = process_images(request)
     return jsonify(result_response)
 
