@@ -225,6 +225,7 @@ executor = Executor(app)
 shell2http = Shell2HTTP(app=app, executor=executor, base_url_prefix="/api/")
 
 shell2http.register_command(endpoint="pixplot", command_name="python /usr/src/app/pixplot/pixplot.py")
+shell2http.register_command(endpoint="yale_pixplot", command_name="pixplot")
 
 if __name__ == "__main__":
     print('Starting server...')
