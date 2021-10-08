@@ -1,8 +1,8 @@
 FROM continuumio/anaconda3
 
 # Create conda environment
-RUN conda update -n base -c defaults conda &&\
-    conda create -n env python=3.7 &&\
+RUN conda update -n base -c defaults conda && \
+    conda create -n env python=3.7 && \
     echo "source activate env" > ~/.bashrc
 ENV PATH /opt/conda/envs/env/bin:$PATH
 
@@ -21,4 +21,4 @@ RUN pip uninstall pixplot &&\
 # CMD ["python", "-m", "flask", "run", "--host", "0.0.0.0", "-p", "4000"]
 
 # Or Start gunicorn server on startup
-CMD ["python", "-m", "gunicorn", "--worker-tmp-dir", "/dev/shm", "--workers=2", "--threads=4", "--worker-class=gthread", "--log-level=debug", "--reload", "--bind", "0.0.0.0:4000", "app:app"]
+CMD ["python", "-m", "gunicorn", "--worker-tmp-dir", "/dev/shm", "--workers=1", "--threads=4", "--worker-class=gthread", "--log-level=info", "--reload", "--bind", "0.0.0.0:4000", "app:app"]
