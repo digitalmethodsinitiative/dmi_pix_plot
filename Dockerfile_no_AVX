@@ -15,7 +15,7 @@ COPY . /usr/src/app/
 # Install pixplot and additional python libraries
 RUN pip uninstall pixplot && \
   pip install https://github.com/yaledhlab/pix-plot/archive/master.zip && \
-  pip install flask flask_shell2http && \
+  pip install flask flask_shell2http gunicorn pyyaml && \
   pip uninstall -y tensorflow && \
   pip install https://tf.novaal.de/barcelona/tensorflow-2.5.0-cp37-cp37m-linux_x86_64.whl
 

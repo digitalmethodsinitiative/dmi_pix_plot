@@ -8,6 +8,14 @@ import uuid
 import sys
 import os
 import time
+import yaml
+
+# Import config options
+with open('config.yml') as file:
+    config_data = yaml.load(file, Loader=yaml.FullLoader)
+
+trusted_proxies = config_data.get('TRUSTED_PROXIES')
+ip_whitelist = config_data.get('IP_WHITELIST')
 
 # Flask application instance
 app = Flask(__name__)
@@ -56,13 +64,32 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Allowed upload extensions
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+@app.before_request
+def limit_remote_addr():
+    """
+    Checks the incoming IP address and compares with whitelist
+    """
+    if ip_whitelist:
+        # Check that whitelist exists
+        route = request.access_route + [request.remote_addr]
+        remote_addr = next((addr for addr in reversed(route) if addr not in trusted_proxies), request.remote_addr)
+        app.logger.debug('remote_address: '+str(remote_addr))
+        if remote_addr not in ip_whitelist:
+            abort(403)  # Forbidden
+    else:
+        # No whitelist = access for all
+        return
+
 
 def allowed_file(filename, extensions=ALLOWED_EXTENSIONS):
     """
     Check filenames to ensure they are an allowed extension
     """
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in extensions
+
 
 # File browser
 def dir_listing(base_dir, req_path, template):
@@ -82,10 +109,12 @@ def dir_listing(base_dir, req_path, template):
     current_dir = req_path.split('/')[-1]
     return render_template(template, files=files, current_dir=current_dir)
 
+
 # Home
 @app.route('/')
 def home():
     return render_template('home.html')
+
 
 # Use file browser for uploads
 @app.route('/uploads/', defaults={'req_path': ''})
@@ -93,12 +122,14 @@ def home():
 def uploads(req_path):
     return dir_listing(UPLOAD_FOLDER, req_path, 'images.html')
 
+
 # Use file browser for plots
 # TODO create plots specific browser
 @app.route('/plots/', defaults={'req_path': ''})
 @app.route('/plots/<path:req_path>')
 def plots(req_path):
     return dir_listing(PLOTS_FOLDER, req_path, 'plots.html')
+
 
 # Interactive upload
 @app.route('/upload/', methods=['GET', 'POST'])
@@ -114,6 +145,7 @@ def upload_form():
             return redirect(url_for('uploads', req_path=result_response['folder_name']))
     else:
         return render_template('upload_form.html')
+
 
 # Create PixPlot
 @app.route('/create/', methods=['GET','POST'])
@@ -161,6 +193,7 @@ def create():
     else:
         return abort(404)
 
+
 # API upload images
 @app.route('/api/send_photos', methods=['POST'])
 def upload_photos_api():
@@ -176,6 +209,7 @@ def upload_photos_api():
 
     result_response, status_code = process_images(request)
     return jsonify(result_response)
+
 
 def process_images(request):
     if 'images' not in request.files or len(request.files.getlist('images')) < 1:
