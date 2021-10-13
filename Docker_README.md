@@ -5,18 +5,24 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
 
 1. Install [Docker](https://docs.docker.com/get-docker/)
 
-2. Clone [PixPlot Repo](https://github.com/YaleDHLab/pix-plot)
+2. Pull the latest docker image from [Docker Hub](https://hub.docker.com/repository/docker/digitalmethodsinitiative/dmi_pix_plot)
+ - No AVX version: `docker pull digitalmethodsinitiative/dmi_pix_plot:no_AVX`  (for older hardware that Tensorflow doesn't like)
 
-3. In repo directory, run ` docker build -t pix_plot .`
-
-4. Start and connect to container `docker container run --publish 4000:4000 --name pix_plot -it pix_plot`
+3. Start container for first time `sudo docker run --publish 127.0.0.1:4000:4000 --name pix_plot -d digitalmethodsinitiative/dmi_pix_plot:no_AVX`             `
  - `--name pix_plot` will allow you to start the container again later with `docker start pix_plot`
- - `--publish 4000:4000` allows container to publish outside of container (i.e., your localhost)
- - Ctl+c will close and stop the container
+ - `--publish 127.0.0.1:4000:4000` tells Docker what host port connects to the container port <host port>:<container port> 
+   - You can set the host port as you wish
+   - `127.0.0.1:4000:4000` means that only localhost can access your container
+   - `4000:4000` will expose your container to outside connections (via your_ip:4000)
+ - `-d` starts the container in the background
 
-5. Afterwards you can start the docker container in the background with `docker start pix_plot`. You will need to use `docker stop pix_plot` to stop it from running.
-  - `docker start -a pix_plot` will allow you to connect interactively and view output similar to run, however you will need to run `docker stop pix_plot` to end it as opposed to Ctl+c
-  - `docker exec -it pix_plot /bin/bash` will allow you connect to the container via command prompt to run commands as you wish
+4. You are now running! View pixplot at http://localhost:4000 in your browser
+
+5. Afterwards you can stop and start your container as you wish
+  - `docker stop pix_plot` stops the container
+  - `docker start pix_plot` starts the container
+    - `docker start -a pix_plot` will start the container and allow you to connect interactively (to view logs, change config.yml, etc.)
+  - `docker exec -it pix_plot /bin/bash` will allow you connect to a running container via command prompt to run commands as you wish
 
 # Usage of PixPlot container
 
@@ -52,3 +58,22 @@ print(result.json())
 - Navigate your browser to http://localhost:4000/plots/ to view your output PixPlots
   - Navigate to output directory (default output directory name is `output` and can be changed with the arg `--out_dir /usr/src/app/data/plots/whatever_you_want`)
   - Click on index.html
+
+
+# Advanced  Usage
+
+## Build your own Docker image (say if you are developing)
+1. Install [Docker](https://docs.docker.com/get-docker/)
+
+2. Clone [DMI PixPlot Repo](https://github.com/digitalmethodsinitiative/dmi_pix_plot)
+
+3. In repo directory, run ` docker build -t pix_plot .`
+
+4. Start and connect to container `docker container run --publish 4000:4000 --name pix_plot -it pix_plot`
+ - `--name pix_plot` will allow you to start the container again later with `docker start pix_plot`
+ - `--publish 4000:4000` allows container to publish outside of container (i.e., your localhost)
+ - Ctl+c will close and stop the container
+
+5. Afterwards you can start the docker container in the background with `docker start pix_plot`. You will need to use `docker stop pix_plot` to stop it from running.
+  - `docker start -a pix_plot` will allow you to connect interactively and view output similar to run, however you will need to run `docker stop pix_plot` to end it as opposed to Ctl+c
+  - `docker exec -it pix_plot /bin/bash` will allow you connect to the container via command prompt to run commands as you wish
