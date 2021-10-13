@@ -73,6 +73,10 @@ def limit_remote_addr():
     Checks the incoming IP address and compares with whitelist
     """
     if ip_whitelist:
+        # Allow all to view plots
+        if "/plots/" in request.path:
+            return
+
         # Check that whitelist exists
         route = request.access_route + [request.remote_addr]
         remote_addr = next((addr for addr in reversed(route) if addr not in trusted_proxies), request.remote_addr)
