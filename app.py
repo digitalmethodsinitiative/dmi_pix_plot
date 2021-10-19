@@ -27,7 +27,7 @@ if __name__ != '__main__':
     app.logger.setLevel(gunicorn_logger.level)
 
 # Log file
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
 file_handler = logging.FileHandler("pix_plot.log")
 file_handler.setFormatter(logFormatter)
 app.logger.addHandler(file_handler)
@@ -197,8 +197,81 @@ def create():
     else:
         return abort(404)
 
-
 # API upload images
+@app.route('/api/send_photo', methods=['POST'])
+def upload_photo_api():
+    """
+    data = {'folder_name': 'desired_name'}
+    files = {'image': open('image_1.jpg', 'rb')}
+    """
+    folder_name = request.form.get('folder_name', None)
+    if not folder_name:
+        app.logger.warning('No folder_name provided')
+        return jsonify({'reason' : 'Must provide folder_name for single images'}), 400
+
+    image_folder = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+
+    # Make folder if it does not already exist
+    if not os.path.isdir(image_folder):
+        os.mkdir(image_folder)
+
+    image = request.files.get('image', None)
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        app.logger.info(f'Uploading {filename} to {folder_name}')
+        image.save(os.path.join(image_folder, filename))
+
+        json_data = {'args' : ['--images', image_folder + "/*", '--out_dir', PLOTS_FOLDER+ '/' + folder_name]}
+        response = {
+                    'upload_location' : request.url_root + 'uploads/' +  folder_name,
+                    'folder_name' : folder_name,
+                    'create_pixplot_post_info' : {
+                        'url' : request.url_root + 'api/pixplot',
+                        'json' : json_data,
+                        },
+                    }
+        return response, 200
+    else:
+        app.logger.warning('No image received')
+        return jsonify({'reason' : 'No image received'}), 400
+
+
+@app.route('/api/send_metadata', methods=['POST'])
+def upload_metadata_api():
+    """
+    data = {'folder_name': 'desired_name'}
+    files = {'metadata': open('metadata.csv'), 'rb')}
+    """
+    folder_name = request.form.get('folder_name', None)
+    if not folder_name:
+        app.logger.warning('No folder_name provided')
+        return jsonify({'reason' : 'Must provide folder_name for single images'}), 400
+
+    image_folder = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+
+    # Make folder if it does not already exist
+    if not os.path.isdir(image_folder):
+        os.mkdir(image_folder)
+
+    metadata = request.files.get('metadata', None)
+    if metadata and allowed_file(metadata.filename, set(['csv'])):
+        metadata_file_path = os.path.join(image_folder, 'metadata.csv')
+        metadata.save(metadata_file_path)
+        json_data = {'args' : ['--images', image_folder + "/*", '--out_dir', PLOTS_FOLDER + '/' + folder_name, '--metadata', metadata_file_path]}
+        response = {
+                    'upload_location' : request.url_root + 'uploads/' +  folder_name,
+                    'folder_name' : folder_name,
+                    'create_pixplot_post_info' : {
+                        'url' : request.url_root + 'api/pixplot',
+                        'json' : json_data,
+                        },
+                    }
+        return response, 200
+    else:
+        app.logger.warning('No metadata received')
+        return jsonify({'reason' : 'No metadata received'}), 400
+
+# API upload images and metadata as one
 @app.route('/api/send_photos', methods=['POST'])
 def upload_photos_api():
     """
