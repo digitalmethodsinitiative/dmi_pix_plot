@@ -64,6 +64,8 @@ def upload_photo_api():
                     'create_pixplot_post_info': {
                         'url': request.url_root + 'api/pixplot',
                         'json': json_data,
+                        'images_folder': image_folder,
+                        'plot_folder_root': PLOTS_FOLDER,
                         },
                     }
         return response, 200
@@ -103,6 +105,9 @@ def upload_metadata_api():
                     'create_pixplot_post_info': {
                         'url': request.url_root + 'api/pixplot',
                         'json': json_data,
+                        'images_folder': image_folder,
+                        'plot_folder_root': PLOTS_FOLDER,
+                        'metadata_filepath': metadata_file_path,
                         },
                     }
         return response, 200
