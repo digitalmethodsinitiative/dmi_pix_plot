@@ -6,11 +6,15 @@ import sys
 import os
 import yaml
 
+def update_config(config_filepath='config.yml'):
+    # Import config options
+
+    with open(config_filepath) as file:
+        config_data = yaml.load(file, Loader=yaml.FullLoader)
+    return config_data
+
 # Import config options
-
-with open('config.yml') as file:
-    config_data = yaml.load(file, Loader=yaml.FullLoader)
-
+config_data = update_config()
 trusted_proxies = config_data.get('TRUSTED_PROXIES')
 ip_whitelist = config_data.get('IP_WHITELIST')
 
@@ -69,6 +73,10 @@ def limit_remote_addr():
     """
     Checks the incoming IP address and compares with whitelist
     """
+    config_data = update_config()
+    trusted_proxies = config_data.get('TRUSTED_PROXIES')
+    ip_whitelist = config_data.get('IP_WHITELIST')
+
     if ip_whitelist:
         # Allow all to view plots
         if "/plots/" in request.path:
