@@ -58,14 +58,20 @@ def create():
             data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination, '--metadata', metadata]}
         else:
             data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination]}
+        app.logger.debug('Create request data: ' + str(data))
 
-        response = requests.post(request.url_root + "api/pixplot", json=data)
+        create_url = request.url_root + "api/pixplot"
+        # TODO: use ProxyFix
+        create_url = create_url.replace('http://', 'https://')
+        app.logger.debug('Create request url: ' + str(create_url))
+
+        response = requests.post(create_url, json=data)
         app.logger.info('Create request status: ' + str(response.status_code))
         app.logger.debug('Create request status: ' + str(response.json()))
 
         while True:
             time.sleep(10)
-            result = requests.get(response.json()['result_url'])
+            result = requests.get(response.json()['result_url'].replace('http://', 'https://'))
             app.logger.debug(str(result.json()))
             if 'status' in result.json().keys() and result.json()['status'] == 'running':
                 # Still running
