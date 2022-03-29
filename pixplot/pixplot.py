@@ -42,6 +42,10 @@ import sys
 import csv
 import os
 
+# Increase the limit for csv fields; 4CAT may send large description fields in
+# metadata file
+csv.field_size_limit(1024 * 1024 * 1024)
+
 ##
 # Python 2 vs 3 imports
 ##
