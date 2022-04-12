@@ -1147,8 +1147,15 @@ def write_json(path, obj, **kwargs):
       out.write(json.dumps(obj, indent=4).encode(kwargs['encoding']))
     return path
   else:
-    with open(path, 'w') as out:
-      json.dump(obj, out, indent=4)
+    try:
+        with open(path, 'w') as out:
+            json.dump(obj, out, indent=4)
+    except OSError as exc:
+        if exc.errno == 36:
+            # filename too long; don't deal with it
+            return path
+        else:
+            raise  # re-raise previously caught exceptio
     return path
 
 
