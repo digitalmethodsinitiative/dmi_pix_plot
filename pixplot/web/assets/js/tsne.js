@@ -3036,6 +3036,8 @@ Filter.prototype.filterImages = function() {
     filters.filterImages();
   } else {
     var filename = this.selected.replace(/\//g, '-').replace(/ /g, '__') + '.json',
+        // Fix for filename length limits; must handle the same as pixplot.py write_metadata() line 359
+        filename = filename.substring(0, 250)
         path = getPath(config.data.dir + '/metadata/options/' + filename);
     get(path, function(json) {
       var vals = json.reduce(function(obj, i) {
