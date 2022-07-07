@@ -9,6 +9,12 @@ from app import app, PLOTS_FOLDER, UPLOAD_FOLDER
 from functions import dir_listing, process_images
 
 
+def url_for_wrapper(path, **kwargs):
+    if app.config['SERVER_HTTPS']:
+        return url_for(path, _external=True, _scheme='https', **kwargs)
+    else:
+        return url_for(path, **kwargs)
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -34,9 +40,9 @@ def upload_form():
         if status_code != 200:
             message = 'There was an error uploading photos: ' + str(result_response['reason'])
             flash(message)
-            return redirect('/upload/')
+            return redirect(url_for_wrapper('upload_form'))
         else:
-            return redirect(url_for('uploads', req_path=result_response['folder_name']))
+            return redirect(url_for_wrapper('uploads', req_path=result_response['folder_name']))
     else:
         return render_template('upload_form.html')
 
@@ -87,7 +93,7 @@ def create():
                 break
 
         flash(message)
-        return redirect('/create/')
+        return redirect(url_for_wrapper('create'))
 
     else:
         return abort(404)

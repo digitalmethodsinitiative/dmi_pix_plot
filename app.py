@@ -61,6 +61,7 @@ for folder in [UPLOAD_FOLDER, PLOTS_FOLDER]:
 # Config app
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SERVER_HTTPS'] = config_data.get('HTTPS')
 # Limit size of upload; 16 * 1024 * 1024 is 16 megabytes
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 

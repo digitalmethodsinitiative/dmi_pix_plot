@@ -5,3 +5,4 @@ IP_WHITELIST: # Leave blank for access to all
 #  - 172.17.0.1 # Docker proxy to allow on machine with Docker container
 #  - 172.17.0.2 # "Docker, this is Docker speaking"
 
+HTTPS: True
