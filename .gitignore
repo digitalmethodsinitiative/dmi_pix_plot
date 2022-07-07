@@ -17,3 +17,4 @@ models
 geo
 !pixplot/web/assets/vendor/dist/
 .idea/
+config.yml

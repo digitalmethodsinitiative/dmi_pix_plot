@@ -9,6 +9,12 @@ from app import app, PLOTS_FOLDER, UPLOAD_FOLDER
 from functions import dir_listing, process_images
 
 
+def url_for_wrapper(path, **kwargs):
+    if app.config['SERVER_HTTPS']:
+        return url_for(path, _external=True, _scheme='https', **kwargs)
+    else:
+        return url_for(path, **kwargs)
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -34,9 +40,9 @@ def upload_form():
         if status_code != 200:
             message = 'There was an error uploading photos: ' + str(result_response['reason'])
             flash(message)
-            return redirect('/upload/')
+            return redirect(url_for_wrapper('upload_form'))
         else:
-            return redirect(url_for('uploads', req_path=result_response['folder_name']))
+            return redirect(url_for_wrapper('uploads', req_path=result_response['folder_name']))
     else:
         return render_template('upload_form.html')
 
@@ -58,14 +64,20 @@ def create():
             data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination, '--metadata', metadata]}
         else:
             data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination]}
+        app.logger.debug('Create request data: ' + str(data))
 
-        response = requests.post(request.url_root + "api/pixplot", json=data)
+        create_url = request.url_root + "api/pixplot"
+        # TODO: use ProxyFix
+        create_url = create_url.replace('http://', 'https://')
+        app.logger.debug('Create request url: ' + str(create_url))
+
+        response = requests.post(create_url, json=data)
         app.logger.info('Create request status: ' + str(response.status_code))
         app.logger.debug('Create request status: ' + str(response.json()))
 
         while True:
             time.sleep(10)
-            result = requests.get(response.json()['result_url'])
+            result = requests.get(response.json()['result_url'].replace('http://', 'https://'))
             app.logger.debug(str(result.json()))
             if 'status' in result.json().keys() and result.json()['status'] == 'running':
                 # Still running
@@ -81,7 +93,7 @@ def create():
                 break
 
         flash(message)
-        return redirect('/create/')
+        return redirect(url_for_wrapper('create'))
 
     else:
         return abort(404)

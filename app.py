@@ -6,11 +6,17 @@ import sys
 import os
 import yaml
 
+def update_config(config_filepath='config.yml'):
+    # Import config options
+    if not os.path.exists(config_filepath):
+        raise Exception("No config.yml file exists! Update and rename the config-example.yml file.")
+
+    with open(config_filepath) as file:
+        config_data = yaml.load(file, Loader=yaml.FullLoader)
+    return config_data
+
 # Import config options
-
-with open('config.yml') as file:
-    config_data = yaml.load(file, Loader=yaml.FullLoader)
-
+config_data = update_config()
 trusted_proxies = config_data.get('TRUSTED_PROXIES')
 ip_whitelist = config_data.get('IP_WHITELIST')
 
@@ -57,6 +63,7 @@ for folder in [UPLOAD_FOLDER, PLOTS_FOLDER]:
 # Config app
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SERVER_HTTPS'] = config_data.get('HTTPS')
 # Limit size of upload; 16 * 1024 * 1024 is 16 megabytes
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -69,6 +76,10 @@ def limit_remote_addr():
     """
     Checks the incoming IP address and compares with whitelist
     """
+    config_data = update_config()
+    trusted_proxies = config_data.get('TRUSTED_PROXIES')
+    ip_whitelist = config_data.get('IP_WHITELIST')
+
     if ip_whitelist:
         # Allow all to view plots
         if "/plots/" in request.path:
