@@ -1,26 +1,65 @@
-<!doctype html>
-<title>PixPlot</title>
-<h2>PixPlot Creator</h2>
-<p>
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-		  <li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
-</p>
-<p>
-  <a href="{{ url_for('upload_form') }}">Upload photos</a>
-</p>
-<p>
-  <a href="{{ url_for('uploads') }}">View uploaded photos</a>
-</p>
-<p>
-  <a href="{{ url_for('create') }}">Create PixPlot</a>
-</p>
-<p>
-  <a href="{{ url_for('plots') }}">View PixPlots</a>
-</p>
+{% extends "base.html" %}
+{% block title %}4CAT scrapers{% endblock %}
+{% block head %}
+		{{ super() }}
+{% endblock %}
+{% block nav %}
+		{{ super() }}
+{% endblock %}
+{% block messages %}
+		{{ super() }}
+{% endblock %}
+{% block content %}
+		<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" style="max-width: 700px;">
+				<h1 class="display-4">Welcome</h1>
+				<p class="lead">Upload photos and create PixPlots here!</p>
+		</div>
+
+		<div class="container" style="max-width: 1024px; margin-top: 5%">
+				<div class="card-deck mb-3 text-center">
+						<div class="card mb-4 shadow-sm">
+								<div class="card-header">
+										<h4 class="my-0 font-weight-normal">Upload New Photos</h4>
+								</div>
+								<div class="card-body">
+										<form method="get" action="{{ url_for('upload_form') }}">
+												<button class="btn btn-lg btn-block btn-outline-primary" type="submit">Upload</button>
+										</form>
+								</div>
+						</div>
+						<div class="card mb-4 shadow-sm">
+								<div class="card-header">
+										<h4 class="my-0 font-weight-normal">Photos</h4>
+								</div>
+								<div class="card-body">
+									<form method="get" action="{{ url_for('uploads') }}">
+											<button class="btn btn-lg btn-block btn-outline-primary" type="submit">View Photos</button>
+									</form>
+								</div>
+						</div>
+						<div class="card mb-4 shadow-sm">
+								<div class="card-header">
+										<h4 class="my-0 font-weight-normal">Create a PixPlot</h4>
+								</div>
+								<div class="card-body">
+									<form method="get" action="{{ url_for('create') }}">
+											<button class="btn btn-lg btn-block btn-outline-primary" type="submit">Create</button>
+									</form>
+								</div>
+						</div>
+						<div class="card mb-4 shadow-sm">
+								<div class="card-header">
+										<h4 class="my-0 font-weight-normal">View PixPlots</h4>
+								</div>
+								<div class="card-body">
+									<form method="get" action="{{ url_for('plots') }}">
+											<button class="btn btn-lg btn-block btn-outline-primary" type="submit">View</button>
+									</form>
+								</div>
+						</div>
+				</div>
+		</div>
+{% endblock %}
+{% block footer %}
+    {{ super() }}
+{% endblock %}

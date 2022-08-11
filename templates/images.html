@@ -1,21 +1,15 @@
-<!doctype html>
-<title>Uploaded Images</title>
-<h2><a href = "{{ url_for('uploads') }}">Uploaded Images</a></h2>
-<p>
-  <a href="{{ url_for('home') }}">Return home</a>
-</p>
-<h2>{{ current_dir }}</h2>
-<p>
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-		  <li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
-</p>
+{% extends "base.html" %}
+{% block title %}4CAT scrapers{% endblock %}
+{% block head %}
+		{{ super() }}
+{% endblock %}
+{% block nav %}
+		{{ super() }}
+{% endblock %}
+{% block messages %}
+		{{ super() }}
+{% endblock %}
+{% block content %}
 <ul>
     {% for file in files %}
     <li>
@@ -25,6 +19,7 @@
     </li>
     {% endfor %}
 </ul>
-<p>
-  <a href="{{ url_for('home') }}">Return home</a>
-</p>
+{% endblock %}
+{% block footer %}
+    {{ super() }}
+{% endblock %}
