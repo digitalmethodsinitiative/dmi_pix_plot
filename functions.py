@@ -11,7 +11,7 @@ def process_images(request):
     if 'images' not in request.files or len(request.files.getlist('images')) < 1:
         # No images received
         app.logger.warning('No images received')
-        return jsonify({'reason': 'No images received'}), 400
+        return {'reason': 'No images received'}, 400
 
     if request.form['folder_name']:
         folder_name = request.form['folder_name']

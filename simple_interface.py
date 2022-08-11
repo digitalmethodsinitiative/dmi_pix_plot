@@ -3,7 +3,7 @@ import time
 
 import requests
 from flask import render_template, request, flash, redirect, url_for, abort
-from jinja2 import Markup
+from jinja2.utils import markupsafe
 
 from app import app, PLOTS_FOLDER, UPLOAD_FOLDER
 from functions import dir_listing, process_images
@@ -84,7 +84,7 @@ def create():
                 continue
             elif 'report' in result.json().keys() and result.json()['report'][-6:-1] == 'Done!':
                 # Complete without error
-                message = Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name'])
+                message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name'])
                 break
             else:
                 # Something botched

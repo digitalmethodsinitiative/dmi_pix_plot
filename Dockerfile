@@ -15,7 +15,7 @@ COPY . /usr/src/app/
 # Install pixplot and additional python libraries
 RUN pip uninstall pixplot &&\
     pip install https://github.com/yaledhlab/pix-plot/archive/master.zip &&\
-    pip install flask flask_shell2http gunicorn pyyaml
+    pip install flask flask_shell2http gunicorn pyyaml jinja2
 
 # Start Flask server on startup
 # CMD ["python", "-m", "flask", "run", "--host", "0.0.0.0", "-p", "4000"]
