@@ -7,6 +7,7 @@ from jinja2.utils import markupsafe
 
 from app import app, PLOTS_FOLDER, UPLOAD_FOLDER
 from functions import dir_listing, process_images
+from backend.pix_plot_creater import PixPlotCreater
 
 
 def url_for_wrapper(path, **kwargs):
@@ -59,39 +60,29 @@ def create():
 
         destination = os.path.join(PLOTS_FOLDER, form_data['folder_name'])
 
-        if os.path.isfile(os.path.join(image_location, 'metadata.csv')):
-            metadata = os.path.join(image_location, 'metadata.csv')
-            data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination, '--metadata', metadata]}
-        else:
-            data = {"args": ['--images', image_location + "/*.jpg", '--out_dir', destination]}
-        app.logger.debug('Create request data: ' + str(data))
+        app.logger.debug('Create request for %s' % form_data['folder_name'])
 
         create_url = request.url_root + "api/pixplot"
         # TODO: use ProxyFix
         create_url = create_url.replace('http://', 'https://')
         app.logger.debug('Create request url: ' + str(create_url))
 
-        response = requests.post(create_url, json=data)
-        app.logger.info('Create request status: ' + str(response.status_code))
-        app.logger.debug('Create request status: ' + str(response.json()))
+        creater = PixPlotCreater(image_location, destination)
+        creater.create_new(metadata=True)
+        app.logger.info('Creation started for %s' % form_data['folder_name'])
 
-        while True:
+        message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name'])
+        log_message = 'Creation completed for %s' % form_data['folder_name']
+        start = time.time()
+        while creater.check_complete():
             time.sleep(10)
-            result = requests.get(response.json()['result_url'].replace('http://', 'https://'))
-            app.logger.debug(str(result.json()))
-            if 'status' in result.json().keys() and result.json()['status'] == 'running':
-                # Still running
-                continue
-            elif 'report' in result.json().keys() and result.json()['report'][-6:-1] == 'Done!':
-                # Complete without error
-                message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name'])
-                break
-            else:
-                # Something botched
-                message = 'There was an error creating your PixPlot. Sorry.'
-                app.logger.error(str(result.json()))
+            if time.time() - start > 600:
+                # Taking a long time
+                message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Taking longer than 10 minutes; check back later at this link</a>' % form_data['folder_name'])
+                log_message = 'Took longer than 10 minutes to create %s' % form_data['folder_name']
                 break
 
+        app.logger.info(log_message)
         flash(message)
         return redirect(url_for_wrapper('create'))
 
