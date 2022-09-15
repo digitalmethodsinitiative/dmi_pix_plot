@@ -73,5 +73,6 @@ def dir_listing(base_dir, req_path, template):
 
     # Show directory contents
     files = os.listdir(abs_path)
+    files.sort()
     current_dir = req_path.split('/')[-1]
     return render_template(template, files=files, current_dir=current_dir)
