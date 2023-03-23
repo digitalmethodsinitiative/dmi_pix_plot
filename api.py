@@ -26,9 +26,16 @@ def list_filenames():
 
         files = os.listdir(image_folder)
 
+        json_data = {'args': ['--images', image_folder + "/*", '--out_dir', PLOTS_FOLDER + '/' + folder_name]}
         return jsonify({
                         'folder_name': folder_name,
-                        'filenames': files
+                        'filenames': files,
+                        'create_pixplot_post_info': {
+                            'url': request.url_root + 'api/pixplot',
+                            'json': json_data,
+                            'images_folder': image_folder,
+                            'plot_folder_root': PLOTS_FOLDER,
+                            },
                        }), 200
 
 
