@@ -3,7 +3,7 @@ This is a fork of https://dhlab.yale.edu/projects/pixplot/.
 
 It was intended to add Docker support and specifically focus on integrating with other tools to allow easy image visualization.
 
-[See additional information here on use](https://github.com/digitalmethodsinitiative/dmi_pix_plot/blob/master/Docker_README.md#intro)
+[See additional information here on use](https://github.com/digitalmethodsinitiative/dmi_pix_plot/wiki/Installing-PixPlot)
 
 Below is the Readme at the time of the fork.
 
