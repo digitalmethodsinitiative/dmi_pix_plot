@@ -15,9 +15,11 @@ See the [change log](https://github.com/YaleDHLab/pix-plot/wiki/Change-Log) for 
 
 ![App preview](./pixplot/web/assets/images/preview.png?raw=true)
 
-## Dependencies
+## Installation & Dependencies
 
-To install the Python dependencies, we recommend you [install Anaconda](https://www.anaconda.com/products/individual#Downloads) and then create a conda environment with a Python 3.7 runtime:
+We maintain several platform-specific [installation cookbooks](https://github.com/YaleDHLab/pix-plot/wiki) online.
+
+Broadly speaking, to install the Python dependencies, we recommend you [install Anaconda](https://www.anaconda.com/products/individual#Downloads) and then create a conda environment with a Python 3.7 runtime:
 
 ```bash
 conda create --name=3.7 python=3.7
@@ -26,12 +28,12 @@ source activate 3.7
 
 Then you can install the dependencies by running:
 
-```bash
-pip uninstall pixplot
+```
+bash
 pip install https://github.com/yaledhlab/pix-plot/archive/master.zip
 ```
 
-Please note that you will need to use Python 3.6 or Python 3.7 to install and use this package. The HTML viewer also requires a WebGL-enabled browser.
+The website that PixPlot eventually creates requires a WebGL-enabled browser.
 
 ## Quickstart
 
@@ -100,7 +102,12 @@ pixplot --images "path/to/images/*.jpg" --n_neighbors 2
 
 ## Curating Automatic Hotspots
 
-PixPlot uses [Hierarchical density-based spatial clustering of applications with noise](https://hdbscan.readthedocs.io/en/latest/index.html), a refinement of the earlier [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) algorithm, to find hotspots in the visualization. You may be interested in consulting this [explanation of how HDBSCAN works](https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html).
+If installed and available, PixPlot uses [Hierarchical density-based spatial clustering of applications with noise](https://hdbscan.readthedocs.io/en/latest/index.html), a refinement of the earlier [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) algorithm, to find hotspots in the visualization. You may be interested in consulting this [explanation of how HDBSCAN works](https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html).
+
+Tip: If you are using HDBSCAN and find that PixPlot creates too few (or only one) 'automatic hotspots', try lowering the `--min_cluster_size` from its default of 20. This often happens with smaller datasets (less than a few thousand.)
+
+If HDBSCAN is not available, PixPlot will fall back to [scikit-learn](https://scikit-learn.org/)'s  implementation of [KMeans](https://scikit-learn.org/stable/modules/clustering.html#k-means).
+
 
 ## Adding Metadata
 

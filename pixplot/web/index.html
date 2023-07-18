@@ -309,8 +309,8 @@
 
     void main() {
       if (!render) discard;
-      float dashSize = 0.01;
-      float gapSize = 0.005;
+      float dashSize = 0.01 * cameraPosition.z;
+      float gapSize = 0.005 * cameraPosition.z;
       if (mod(vLength + time, dashSize + gapSize) > dashSize) discard;
       gl_FragColor = vec4(0.9, 0.9, 0.9, 1.0);
     }
@@ -359,12 +359,16 @@
     <!-- Header -->
     <div id='header-container'>
       <header id='header' class='no-highlight'></header>
-      <div id='header-brand'>
+      <div id='header-brand' class='row align-center'>
         <a href='https://dhlab.yale.edu' target='_blank'>
           <img id='logo' src='assets/images/dhlab-logo.svg' alt='DHLab logo' />
         </a>
-        <div id='app-name'>PixPlot</div>
-        <div class='tagline'>Image Fields in a Local Collection</div>
+        <a id='app-name-container' class='row align-center' href='https://github.com/YaleDHLab/pix-plot'>
+          <div id='app-name'>PixPlot</div>
+        </a>
+        <div class='row align-center'>
+          <div class='tagline'>Image Fields in a Local Collection</div>
+        </div>
       </div>
       <div id='header-controls'>
         <div id='header-controls-top' class='no-highlight'>
@@ -466,7 +470,7 @@
                 <div class='hotspot-action drag-hotspot'>...</div>
                 <img class='hotspot-action refresh-hotspot' src='assets/images/icons/refresh.svg'>
               <% } %>
-              <div class='hotspot-body'>
+              <div class='hotspot-body no-highlight'>
                 <img class='hotspot-image' src='data/thumbs/<%= hotspot.img %>'>
                 <div class='hotspot-bar-container'>
                   <div class='hotspot-bar-inner'></div>
@@ -497,7 +501,8 @@
       <div class='modal-content'>
         <div class='modal-x'>✕</div>
         <div class='modal-top'>
-          <div id='selected-image-parent' class='modal-top-content'>
+          <div id='selected-image-container'>
+            <div id='selected-image-target'></div>
             <div class='icons'>
               <a target='_blank' id='eye-icon' href='<%- meta.permalink || meta.src %>'>
                 <img src='assets/images/icons/eye-icon.png' alt='eye icon' />
@@ -622,7 +627,8 @@
     <script src='assets/vendor/dist/lodash.min.js'></script>
     <script src='assets/js/object-assign-polyfill.js'></script>
     <script src='assets/vendor/dist/gsap.min.js'></script>
-    <script src='assets/vendor/dist/trackball-controls.min.js'></script>
+    <script src='assets/vendor/src/trackball-controls.js'></script>
+    <script src='assets/vendor/src/fly-controls.js'></script>
     <script src='assets/vendor/dist/stats.min.js'></script>
     <script src='assets/vendor/dist/gunzip.min.js'></script>
     <script src='assets/vendor/dist/papaparse.min.js'></script>
