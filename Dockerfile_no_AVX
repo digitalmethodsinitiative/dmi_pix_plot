@@ -13,14 +13,10 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app/
 
 # Install pixplot and additional python libraries
-RUN pip uninstall pixplot && \
-  pip install https://github.com/yaledhlab/pix-plot/archive/master.zip && \
-  pip install flask flask_shell2http gunicorn pyyaml && \
-  pip uninstall -y tensorflow && \
-  pip install https://tf.novaal.de/barcelona/tensorflow-2.5.0-cp37-cp37m-linux_x86_64.whl
+RUN python3 -m pip uninstall uninstall pixplot tensorflow && \
+  python3 -m pip install flask flask_shell2http "gunicorn<21" pyyaml requests[security] https://github.com/yaledhlab/pix-plot/archive/master.zip https://tf.novaal.de/barcelona/tensorflow-2.5.0-cp37-cp37m-linux_x86_64.whl
 
-# Start Flask server on startup
-#CMD ["python", "-m", "flask", "run", "--host", "0.0.0.0", "-p", "4000"]
+Expose 4000
 
 # Or Start gunicorn server on startup
-CMD ["python", "-m", "gunicorn", "--worker-tmp-dir", "/dev/shm", "--workers=1", "--threads=4", "--worker-class=gthread", "--log-level=debug", "--reload", "--bind", "0.0.0.0:4000", "app:app"]
+CMD ["python3", "-m", "gunicorn", "--worker-tmp-dir", "/dev/shm", "--workers=1", "--threads=4", "--worker-class=gthread", "--log-level=debug", "--bind", "0.0.0.0:4000", "app:app"]

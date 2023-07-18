@@ -16,24 +16,6 @@ import uuid
 import sys
 import os
 
-# Increase the limit for csv fields; 4CAT may send large description fields in
-# metadata file
-csv.field_size_limit(1024 * 1024 * 1024)
-
-##
-# Python 2 vs 3 imports
-##
-
-try:
-  from urllib.parse import unquote # python 3
-except:
-  from urllib import unquote # python 2
-
-try:
-  from urllib.request import retrieve as download_function # python 3
-except:
-  from urllib.request import urlretrieve as download_function # python 2
-
 ##
 # Conditional imports
 ##
@@ -79,6 +61,10 @@ if '--copy_web_only' not in sys.argv:
   import gzip
   import json
   import csv
+
+  # Increase the limit for csv fields; 4CAT may send large description fields in
+  # metadata file
+  csv.field_size_limit(1024 * 1024 * 1024)
 
   ##
   # Python 2 vs 3 imports
