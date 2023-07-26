@@ -30,11 +30,11 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
 - A simple web interface will start with the container by default on localhost
     - http://localhost:4000/upload/ will allow you to upload images
     - http://localhost:4000/uploads/ will allow you to browse uploaded images
-      - Uploaded images will be located at `/usr/src/app/data/uploads/user_defined_folder_name/`
+      - Uploaded images will be located at `/app/data/uploads/user_defined_folder_name/`
     - http://localhost:4000/create/ will allow you to use one of the folders to create a PixPlot
     - http://localhost:4000/plots/ will allow you to navigate to a created PixPlot
 
-- You can also use docker to copy any image files with  `docker cp path/to/name_of_folder pix_plot:/usr/src/app/name_of_folder`
+- You can also use docker to copy any image files with  `docker cp path/to/name_of_folder pix_plot:/app/name_of_folder`
   - Run this from host machine, not inside docker container
 
 ### Using API to create PixPlots
@@ -45,7 +45,7 @@ This Docker container allows a user to run PixPlot to create outputs and then vi
 ```
 # This is equivalent to "python pixplot/pixplot.py --images "path/to/images/*.jpg" --metadata "path/to/metadata.csv"
 import requests
-data = {"args" : ['--images', "/usr/src/app/data/uploads/user_defined_folder_name/*.jpg", '--metadata', "/usr/src/app/data/uploads/user_defined_folder_name/metadata.csv"]}
+data = {"args" : ['--images', "/app/data/uploads/user_defined_folder_name/*.jpg", '--metadata', "/app/data/uploads/user_defined_folder_name/metadata.csv"]}
 resp = requests.post("http://localhost:4000/api/pixplot", json=data)
 ```
   - You can check the status of your command like so:
@@ -56,7 +56,7 @@ print(result.json())
 - It is also possible to run commands directly while the docker container is running via `docker exec -it pix_plot "/bin/bash"`
 
 - Navigate your browser to http://localhost:4000/plots/ to view your output PixPlots
-  - Navigate to output directory (default output directory name is `output` and can be changed with the arg `--out_dir /usr/src/app/data/plots/whatever_you_want`)
+  - Navigate to output directory (default output directory name is `output` and can be changed with the arg `--out_dir /app/data/plots/whatever_you_want`)
   - Click on index.html
 
 

@@ -7,10 +7,10 @@ RUN conda update -n base -c defaults conda && \
 ENV PATH /opt/conda/envs/env/bin:$PATH
 
 # Set working Dir
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy application
-COPY . /usr/src/app/
+COPY . /app/
 
 # Install pixplot and additional python libraries
 RUN python3 -m pip uninstall uninstall pixplot tensorflow && \

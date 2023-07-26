@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 class PixPlotCreater():
-    pixplot_command = ['/opt/conda/envs/env/bin/python', '-u', '/usr/src/app/pixplot/pixplot.py']
+    pixplot_command = ['/opt/conda/envs/env/bin/python', '-u', '/app/pixplot/pixplot.py']
 
     def __init__(self, path_to_images, path_to_plot):
         self.image_path = path_to_images
