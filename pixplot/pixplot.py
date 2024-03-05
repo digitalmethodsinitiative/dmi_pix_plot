@@ -362,7 +362,7 @@ def write_metadata(metadata, **kwargs):
   d = defaultdict(list)
   for i in metadata:
     filename = clean_filename(i['filename'])
-    i['tags'] = [j.strip() for j in i.get('tags', '').split('|')]
+    i['tags'] = [j.strip() for j in i.get('tags').split('|') if i.get('tags')]
     for j in i['tags']: d[ '__'.join(j.split()) ].append(filename)
     write_json(os.path.join(out_dir, 'file', filename + '.json'), i, **kwargs)
   write_json(os.path.join(out_dir, 'filters', 'filters.json'), [{
