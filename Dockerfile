@@ -29,6 +29,8 @@ WORKDIR /app/
 # Copy application
 COPY . /app/
 
+VOLUME /app/data
+
 Expose 4000
 
 # Or Start gunicorn server on startup

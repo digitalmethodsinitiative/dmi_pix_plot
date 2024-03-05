@@ -12,6 +12,8 @@ WORKDIR /app
 # Copy application
 COPY . /app/
 
+VOLUME /app/data
+
 # Install pixplot and additional python libraries
 RUN python3 -m pip uninstall uninstall pixplot tensorflow && \
   python3 -m pip install flask flask_shell2http "gunicorn<21" pyyaml requests[security] https://github.com/yaledhlab/pix-plot/archive/master.zip https://tf.novaal.de/barcelona/tensorflow-2.5.0-cp37-cp37m-linux_x86_64.whl
