@@ -71,16 +71,36 @@ def create():
         creater.create_new(metadata=True)
         app.logger.info('Creation started for %s' % form_data['folder_name'])
 
-        message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' % form_data['folder_name'])
-        log_message = 'Creation completed for %s' % form_data['folder_name']
         start = time.time()
-        while creater.check_complete():
-            time.sleep(10)
-            if time.time() - start > 600:
-                # Taking a long time
-                message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Taking longer than 10 minutes; check back later at this link</a>' % form_data['folder_name'])
-                log_message = 'Took longer than 10 minutes to create %s' % form_data['folder_name']
+        while True:
+            check = creater.check_complete()
+            if check:
+                # Finished
+                creation_log = creater.read_log()
+                last_line = [line for line in creation_log.split('\n') if line.strip()][-1]
+                app.logger.debug('Last line of log: ' + last_line)
+                if 'Error' in last_line:
+                    message = markupsafe.Markup('<a href="/plots/%s/pixplot_creation.log" class="alert-link">Error creating PixPlot; download log</a>' % form_data['folder_name'])
+                    log_message = f"Creation Error ({form_data['folder_name']}): {last_line}"
+                else:
+                    message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Finished! Your PixPlot is uploaded here.</a>' %
+                        form_data['folder_name'])
+                    log_message = 'Creation completed for %s' % form_data['folder_name']
                 break
+            elif check is None:
+                # Error; no process
+                message = markupsafe.Markup('<a href="/plots/%s/pixplot_creation.log" class="alert-link">Error creating PixPlot; download log</a>' % form_data['folder_name'])
+                log_message = 'Error creating %s' % form_data['folder_name']
+                app.logger.error(f"{form_data['folder_name']} Error ({check}): check log {str(creater.plot_path) + 'pixplot_creation.log'}")
+                break
+            else:
+                # Running
+                time.sleep(10)
+                if time.time() - start > 600:
+                    # Taking a long time
+                    message = markupsafe.Markup('<a href="/plots/%s/index.html" class="alert-link">Taking longer than 10 minutes; check back later at this link</a>' % form_data['folder_name'])
+                    log_message = 'Took longer than 10 minutes to create %s' % form_data['folder_name']
+                    break
 
         app.logger.info(log_message)
         flash(message)
