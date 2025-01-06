@@ -1,7 +1,9 @@
 # DMI PixPlot
 This is a fork of https://dhlab.yale.edu/projects/pixplot/.
 
-It was intended to add Docker support and specifically focus on integrating with other tools to allow easy image visualization.
+This project is intended to add Docker support and an API specifically focus on integrating with other tools to allow easy image visualization. We also developed a quick and easy UI to allow photo upload and PixPlot creation. The full functionality is available via the command line if desired.
+![image](https://github.com/user-attachments/assets/c6958a42-d190-4228-a2f9-adaaa6b1cb3b)
+
 
 [See additional information here on use](https://github.com/digitalmethodsinitiative/dmi_pix_plot/wiki/Installing-PixPlot)
 
