@@ -23,19 +23,11 @@ ENV LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
 RUN python -m pip install python-dev-tools --user --upgrade && \
     python -m pip install https://github.com/yaledhlab/pix-plot/archive/master.zip flask_shell2http flask "gunicorn<21" pyyaml jinja2
 
-# Create a non-root user and set permissions
-RUN useradd -m -s /bin/bash appuser && \
-    mkdir -p /app/data && \
-    chown -R appuser:appuser /app
-
-# Switch to the non-root user
-USER appuser
-
 # Set working directory
 WORKDIR /app/
 
-# Copy application as the non-root user
-COPY --chown=appuser:appuser . /app/
+# Copy application
+COPY . /app/
 
 VOLUME /app/data
 
